@@ -1,0 +1,19 @@
+# macOS junk
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Secrets
+.env
+*.key
+
+# Data
+data/raw/
+*.duckdb
