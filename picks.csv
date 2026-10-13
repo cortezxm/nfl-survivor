@@ -3,3 +3,4 @@ season,week,decision_at_utc,pick,opponent,pick_moneyline,opponent_moneyline,snap
 2026,3,2026-09-22T18:23:11Z,KC,MIA,-850,575,schedule_20260922T180918Z.csv,2026-09-22T18:09:18Z,market baseline
 2026,4,2026-09-29T17:23:27Z,MIN,MIA,-750,525,schedule_20260929T164728Z.csv,2026-09-29T16:47:28Z,market baseline
 2026,5,2026-10-07T16:05:30Z,DAL,TB,-470,360,schedule_20261007T154527Z.csv,2026-10-07T15:45:27Z,market baseline
+2026,6,2026-10-13T22:07:25Z,LA,ARI,-900,600,schedule_20261013T215424Z.csv,2026-10-13T21:54:24Z,market baseline
