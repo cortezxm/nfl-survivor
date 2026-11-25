@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="charts/00_banner.png" alt="nfl-survivor: one greedy survivor pick per week, 2026 season">
+</p>
+
 # nfl-survivor
 
 > How far does picking the market's biggest favorite carry you in an NFL survivor pool?
@@ -51,18 +55,18 @@ before kickoff.
 
 | Week | Pick | Opponent | Moneyline | Win prob. | Result |
 |---:|:---|:---|---:|---:|:---|
-| 1 | **JAX** | vs CLE | -470 | 79% | ✅ W 34–10 |
-| 2 | **SF** | vs MIA | -950 | 87% | ✅ W 35–13 |
-| 3 | **KC** | @ MIA | -850 | 86% | ✅ W 24–10 |
-| 4 | **MIN** | vs MIA | -750 | 85% | ✅ W 15–10 |
-| 5 | **DAL** | vs TB | -470 | 79% | ❌ L 16–24 · *eliminated* |
-| 6 | **LA** | vs ARI | -900 | 86% | ❌ L 16–18 |
-| 7 | **HOU** | vs NYG | -520 | 80% | ❌ L 21–27 |
-| 8 | **CIN** | vs TEN | -900 | 86% | ✅ W 43–36 |
-| 9 | **SEA** | vs ARI | -455 | 79% | ✅ W 17–3 |
-| 10 | **BUF** | @ NYJ | -485 | 80% | ✅ W 31–12 |
-| 11 | **CHI** | vs NO | -670 | 84% | ✅ W 21–13 |
-| 12 | **WAS** | @ ARI | -348 | 75% | pending |
+| 1 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/jax.png" width="22" align="center"> **JAX** | vs CLE | -470 | 79% | ✅ W 34–10 |
+| 2 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/sf.png" width="22" align="center"> **SF** | vs MIA | -950 | 87% | ✅ W 35–13 |
+| 3 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/kc.png" width="22" align="center"> **KC** | @ MIA | -850 | 86% | ✅ W 24–10 |
+| 4 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/min.png" width="22" align="center"> **MIN** | vs MIA | -750 | 85% | ✅ W 15–10 |
+| 5 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/dal.png" width="22" align="center"> **DAL** | vs TB | -470 | 79% | ❌ L 16–24 · *eliminated* |
+| 6 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/lar.png" width="22" align="center"> **LA** | vs ARI | -900 | 86% | ❌ L 16–18 |
+| 7 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/hou.png" width="22" align="center"> **HOU** | vs NYG | -520 | 80% | ❌ L 21–27 |
+| 8 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/cin.png" width="22" align="center"> **CIN** | vs TEN | -900 | 86% | ✅ W 43–36 |
+| 9 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/sea.png" width="22" align="center"> **SEA** | vs ARI | -455 | 79% | ✅ W 17–3 |
+| 10 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/buf.png" width="22" align="center"> **BUF** | @ NYJ | -485 | 80% | ✅ W 31–12 |
+| 11 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/chi.png" width="22" align="center"> **CHI** | vs NO | -670 | 84% | ✅ W 21–13 |
+| 12 | <img src="https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png" width="22" align="center"> **WAS** | @ ARI | -348 | 75% | pending |
 
 The source of truth is [`picks.csv`](picks.csv). Results are read from the latest
 schedule snapshot, never written into the picks log.
@@ -108,6 +112,8 @@ data.
 saved as an immutable, timestamped snapshot in
 [`data/snapshots/`](data/snapshots), and each pick records which snapshot it
 was made from.
+Team logos come from nflverse's teams table and are cached in `data/raw/logos/`
+(gitignored) the first time a chart script runs.
 
 **Run it.**
 
@@ -118,6 +124,7 @@ python3 -m venv .venv
 ./.venv/bin/python snapshot.py                 # new snapshot -> data/snapshots/
 duckdb -c ".read sql/week12_favorites.sql"     # this week's candidates
 ./.venv/bin/python chart1.py                   # -> charts/01_pick_probability.png
+./.venv/bin/python banner.py                   # -> charts/00_banner.png
 ```
 
 **Weekly loop.** Take a snapshot. Copy last week's `sql/weekN_favorites.sql`,

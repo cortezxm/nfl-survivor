@@ -1,39 +1,16 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import pandas as pd
+from matplotlib.offsetbox import AnnotationBbox, OffsetImage
+
+from brand import logo, teams
+from season import load_picks
 
 GOOD, CRITICAL, MUTED = "#0ca30c", "#d03b3b", "#898781"
 INK, INK_2, GRID, SURFACE = "#0b0b0b", "#52514e", "#e1e0d9", "#fcfcfb"
 
-
-def implied(moneyline: pd.Series) -> pd.Series:
-    """American moneyline -> implied probability, vig included."""
-    favorite = -moneyline / (-moneyline + 100)
-    underdog = 100 / (moneyline + 100)
-    return favorite.where(moneyline < 0, underdog)
-
-
-picks = pd.read_csv("picks.csv")
-snapshot = sorted(Path("data/snapshots").glob("schedule_*.csv"))[-1]
-games = pd.read_csv(snapshot)
-
-# No-vig win probability: normalise the two implied probabilities to sum to 1.
-pick_p, opp_p = implied(picks["pick_moneyline"]), implied(picks["opponent_moneyline"])
-picks["win_prob"] = pick_p / (pick_p + opp_p)
-
-# Results come from the latest snapshot, never from picks.csv.
-games = games[games["season"] == 2026]
-scores = pd.concat([
-    games[["week", "home_team", "home_score", "away_score"]]
-        .set_axis(["week", "team", "pf", "pa"], axis=1),
-    games[["week", "away_team", "away_score", "home_score"]]
-        .set_axis(["week", "team", "pf", "pa"], axis=1),
-])
-picks = picks.merge(scores, left_on=["week", "pick"], right_on=["week", "team"])
-picks["result"] = "pending"
-picks.loc[picks["pf"] > picks["pa"], "result"] = "won"
-picks.loc[picks["pf"] < picks["pa"], "result"] = "lost"
+picks = load_picks()
+team_table = teams()
 
 fig, ax = plt.subplots(figsize=(8, 4.5), facecolor=SURFACE)
 ax.set_facecolor(SURFACE)
@@ -51,10 +28,12 @@ for result, style in styles.items():
     ax.scatter(rows["week"], rows["win_prob"], zorder=3,
                **({"edgecolor": SURFACE, "linewidth": 2} | style))
 
+# The team's logo rides above its dot; the tooltip-free PNG names it this way.
 for _, row in picks.iterrows():
-    ax.annotate(row["pick"], (row["week"], row["win_prob"]),
-                xytext=(0, 11), textcoords="offset points",
-                ha="center", fontsize=8.5, color=INK_2)
+    badge = OffsetImage(logo(row["pick"], team_table), zoom=0.045)
+    ax.add_artist(AnnotationBbox(badge, (row["week"], row["win_prob"]),
+                                 xybox=(0, 20), boxcoords="offset points",
+                                 frameon=False, zorder=4))
 
 first_loss = picks.loc[picks["result"] == "lost", "week"].min()
 ax.axvspan(first_loss - 0.5, picks["week"].max() + 0.5, color=MUTED, alpha=0.08, lw=0)
@@ -86,7 +65,4 @@ ax.legend(loc="lower left", frameon=False, fontsize=8.5, labelcolor=INK_2)
 fig.tight_layout()
 Path("charts").mkdir(exist_ok=True)
 fig.savefig("charts/01_pick_probability.png", dpi=160, facecolor=SURFACE)
-
-print(picks[["week", "pick", "opponent", "pick_moneyline", "win_prob", "pf", "pa", "result"]]
-      .to_string(index=False))
 print(f"expected wins {expected:.2f}, actual {wins}")
